@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fonts */
+@import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=cabinet-grotesk@700,800&display=swap');
+
+:root {
+  /* Harmony Teal palette */
+  --background: 183 20% 97%;
+  --foreground: 183 30% 10%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 183 30% 10%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 183 30% 10%;
+
+  --primary: 183 98% 22%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 183 20% 93%;
+  --secondary-foreground: 183 40% 15%;
+
+  --muted: 183 15% 93%;
+  --muted-foreground: 183 10% 45%;
+
+  --accent: 183 30% 88%;
+  --accent-foreground: 183 50% 20%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 183 15% 85%;
+  --input: 183 15% 85%;
+  --ring: 183 98% 22%;
+
+  --radius: 0.5rem;
+
+  --font-body: 'General Sans', 'Inter', sans-serif;
+  --font-display: 'Cabinet Grotesk', 'General Sans', sans-serif;
+}
+
+.dark {
+  --background: 183 25% 8%;
+  --foreground: 183 15% 88%;
+
+  --card: 183 20% 11%;
+  --card-foreground: 183 15% 88%;
+
+  --popover: 183 20% 11%;
+  --popover-foreground: 183 15% 88%;
+
+  --primary: 185 45% 50%;
+  --primary-foreground: 183 30% 5%;
+
+  --secondary: 183 20% 16%;
+  --secondary-foreground: 183 15% 88%;
+
+  --muted: 183 15% 16%;
+  --muted-foreground: 183 10% 55%;
+
+  --accent: 183 25% 20%;
+  --accent-foreground: 183 20% 85%;
+
+  --destructive: 0 62% 55%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 183 15% 22%;
+  --input: 183 15% 22%;
+  --ring: 185 45% 50%;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  min-height: 100dvh;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.step-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.progress-bar {
+  height: 4px;
+  background: hsl(var(--muted));
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: hsl(var(--primary));
+  border-radius: 9999px;
+  transition: width 0.4s ease;
+}
+
+.policy-output {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+  padding: 1.5rem;
+  max-height: 500px;
+  overflow-y: auto;
+  color: hsl(var(--foreground));
+}
+
+.badge-framework {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+.tool-card {
+  border: 2px solid hsl(var(--border));
+  border-radius: 10px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  background: hsl(var(--card));
+}
+
+.tool-card:hover {
+  border-color: hsl(var(--primary));
+  background: hsl(var(--accent));
+}
+
+.tool-card.selected {
+  border-color: hsl(var(--primary));
+  background: hsl(var(--accent));
+}
+
+.tool-card .tool-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: hsl(var(--primary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: 0.01ms !important; }
+}
