@@ -1,16 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, FileText, PlusCircle, Building2, Calendar } from "lucide-react";
-import type { Policy } from "@shared/schema";
+import { useStore } from "@/lib/store";
 
 export default function Dashboard() {
-  const { data: policies, isLoading } = useQuery<Policy[]>({
-    queryKey: ["/api/policies"],
-    queryFn: () => apiRequest("GET", "/api/policies").then(r => r.json()),
-  });
-
+  const { policies } = useStore();
   const fwLabels: Record<string, string> = { ndpr: "NDPR", iso42001: "ISO 42001", iso27001: "ISO 27001", au: "AU AI" };
   const typeColors: Record<string, string> = { primary: "#437a22", secondary: "#01696F", tertiary: "#006494" };
 
@@ -24,9 +18,7 @@ export default function Dashboard() {
                 <ArrowLeft size={16} /> Back
               </button>
             </Link>
-            <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "0.95rem" }}>
-              Consultant Dashboard
-            </div>
+            <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "0.95rem" }}>Session History</div>
           </div>
           <Link href="/generate">
             <Button size="sm" style={{ background: "hsl(var(--primary))", color: "white" }} data-testid="button-new-policy">
@@ -39,27 +31,19 @@ export default function Dashboard() {
       <div className="max-w-4xl mx-auto px-6 py-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "1.4rem", marginBottom: "0.25rem" }}>All Generated Policies</h1>
+            <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "1.4rem", marginBottom: "0.25rem" }}>Generated This Session</h1>
             <p style={{ fontSize: "0.82rem", color: "hsl(var(--muted-foreground))" }}>
-              {isLoading ? "Loading..." : `${policies?.length || 0} polic${policies?.length === 1 ? "y" : "ies"} generated`}
+              {policies.length} {policies.length === 1 ? "policy" : "policies"} — history clears on page refresh
             </p>
           </div>
         </div>
 
-        {isLoading && (
-          <div className="grid grid-cols-1 gap-4">
-            {[1, 2, 3].map(i => (
-              <div key={i} style={{ height: 100, borderRadius: 12, background: "hsl(var(--muted))", animation: "pulse 1.5s infinite" }} />
-            ))}
-          </div>
-        )}
-
-        {!isLoading && (!policies || policies.length === 0) && (
+        {policies.length === 0 && (
           <div className="step-card text-center py-16">
             <FileText size={40} style={{ margin: "0 auto 1rem", color: "hsl(var(--muted-foreground))" }} />
-            <h3 style={{ fontWeight: 700, marginBottom: "0.5rem" }}>No policies yet</h3>
+            <h3 style={{ fontWeight: 700, marginBottom: "0.5rem" }}>No policies yet this session</h3>
             <p style={{ fontSize: "0.85rem", color: "hsl(var(--muted-foreground))", marginBottom: "1.5rem" }}>
-              Generate your first AI governance policy for a school.
+              Generate a policy and it will appear here.
             </p>
             <Link href="/generate">
               <Button style={{ background: "hsl(var(--primary))", color: "white" }}>Generate a Policy</Button>
@@ -67,10 +51,9 @@ export default function Dashboard() {
           </div>
         )}
 
-        {!isLoading && policies && policies.length > 0 && (
+        {policies.length > 0 && (
           <div className="grid grid-cols-1 gap-4">
-            {policies.map(p => {
-              const fws: string[] = JSON.parse(p.frameworks as string);
+            {policies.map((p) => {
               const date = new Date(p.createdAt).toLocaleDateString("en-NG", { day: "numeric", month: "short", year: "numeric" });
               return (
                 <Link key={p.id} href={`/result/${p.id}`}>
@@ -86,7 +69,7 @@ export default function Dashboard() {
                             {p.schoolType.charAt(0).toUpperCase() + p.schoolType.slice(1)} · {p.location}, {p.state}
                           </div>
                           <div className="flex flex-wrap gap-1 mt-2">
-                            {fws.map(f => (
+                            {p.frameworks.map((f) => (
                               <span key={f} style={{ fontSize: "0.68rem", padding: "1px 8px", borderRadius: 9999, background: "hsl(var(--accent))", color: "hsl(var(--accent-foreground))", border: "1px solid hsl(var(--border))", fontWeight: 600 }}>
                                 {fwLabels[f] || f}
                               </span>
@@ -110,7 +93,6 @@ export default function Dashboard() {
           </div>
         )}
       </div>
-      <style>{`@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }`}</style>
     </div>
   );
 }

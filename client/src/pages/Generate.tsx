@@ -3,12 +3,13 @@ import { useLocation, Link } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useStore } from "@/lib/store";
+import { generatePolicy } from "@/lib/policyEngine";
+import type { GeneratedPolicy } from "@/lib/policyEngine";
 import { ChevronLeft, ChevronRight, Bot, BookOpen, Shield, Users, Building2, MessageSquare, Image, Layers } from "lucide-react";
 
 const TOTAL_STEPS = 4;
@@ -49,8 +50,10 @@ type FormData = z.infer<typeof formSchema>;
 
 export default function Generate() {
   const [step, setStep] = useState(1);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  const { addPolicy } = useStore();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -70,21 +73,8 @@ export default function Generate() {
 
   const toggleArr = (field: "aiTools" | "frameworks", val: string) => {
     const cur = getValues(field);
-    setValue(field, cur.includes(val) ? cur.filter(v => v !== val) : [...cur, val]);
+    setValue(field, cur.includes(val) ? cur.filter((v: string) => v !== val) : [...cur, val]);
   };
-
-  const mutation = useMutation({
-    mutationFn: async (data: FormData) => {
-      const payload = { ...data, aiTools: JSON.stringify(data.aiTools), frameworks: JSON.stringify(data.frameworks) };
-      return apiRequest("POST", "/api/policies/generate", payload).then(r => r.json());
-    },
-    onSuccess: (data) => {
-      navigate(`/result/${data.id}`);
-    },
-    onError: () => {
-      toast({ title: "Generation failed", description: "Please check your inputs and try again.", variant: "destructive" });
-    },
-  });
 
   const nextStep = async () => {
     const fieldsPerStep: Record<number, (keyof FormData)[]> = {
@@ -94,14 +84,29 @@ export default function Generate() {
       4: ["frameworks"],
     };
     const valid = await trigger(fieldsPerStep[step]);
-    if (valid) setStep(s => Math.min(s + 1, TOTAL_STEPS));
+    if (valid) setStep((s) => Math.min(s + 1, TOTAL_STEPS));
   };
 
-  const onSubmit = (data: FormData) => mutation.mutate(data);
+  const onSubmit = (data: FormData) => {
+    setIsGenerating(true);
+    try {
+      const policyText = generatePolicy(data);
+      const policy: GeneratedPolicy = {
+        ...data,
+        id: `${Date.now()}`,
+        generatedPolicy: policyText,
+        createdAt: new Date().toISOString(),
+      };
+      addPolicy(policy);
+      navigate(`/result/${policy.id}`);
+    } catch {
+      toast({ title: "Generation failed", description: "Please check your inputs and try again.", variant: "destructive" });
+      setIsGenerating(false);
+    }
+  };
 
   return (
     <div className="min-h-screen" style={{ background: "hsl(var(--background))" }}>
-      {/* Top bar */}
       <header style={{ background: "hsl(var(--card))", borderBottom: "1px solid hsl(var(--border))" }}>
         <div className="max-w-2xl mx-auto px-6 py-4 flex items-center gap-4">
           <Link href="/">
@@ -111,14 +116,11 @@ export default function Generate() {
           </Link>
           <div style={{ flex: 1 }}>
             <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "0.95rem" }}>
-              AI Governance Policy Generator
+              Policy Generator
             </div>
-            <div style={{ fontSize: "0.72rem", color: "hsl(var(--muted-foreground))" }}>
-              Step {step} of {TOTAL_STEPS}
-            </div>
+            <div style={{ fontSize: "0.72rem", color: "hsl(var(--muted-foreground))" }}>Step {step} of {TOTAL_STEPS}</div>
           </div>
         </div>
-        {/* Progress */}
         <div className="progress-bar mx-auto" style={{ maxWidth: "100%" }}>
           <div className="progress-fill" style={{ width: `${(step / TOTAL_STEPS) * 100}%` }} />
         </div>
@@ -127,7 +129,7 @@ export default function Generate() {
       <div className="max-w-2xl mx-auto px-6 py-10">
         <form onSubmit={form.handleSubmit(onSubmit)}>
 
-          {/* STEP 1: School Profile */}
+          {/* STEP 1 */}
           {step === 1 && (
             <div className="step-card">
               <div className="flex items-center gap-3 mb-6">
@@ -140,14 +142,13 @@ export default function Generate() {
                 </div>
               </div>
 
-              {/* Mode toggle */}
               <div className="mb-6">
                 <Label className="mb-2 block text-sm font-semibold">Mode</Label>
                 <div className="flex gap-3">
-                  {[{ val: "school", label: "School Mode", sub: "For school heads & admins" }, { val: "consultant", label: "Consultant Mode", sub: "For ICT consultants managing multiple schools" }].map(m => (
+                  {[{ val: "school", label: "School Mode", sub: "For school heads & admins" }, { val: "consultant", label: "Consultant Mode", sub: "For ICT consultants managing multiple schools" }].map((m) => (
                     <div key={m.val} data-testid={`mode-${m.val}`}
                       onClick={() => setValue("mode", m.val as "school" | "consultant")}
-                      className={`tool-card flex-1 ${mode === m.val ? "selected" : ""}`}>
+                      className={`tool-card flex-1 ${mode === m.val ? "selected" : ""}`} style={{ cursor: "pointer" }}>
                       <div style={{ fontWeight: 600, fontSize: "0.875rem" }}>{m.label}</div>
                       <div style={{ fontSize: "0.75rem", color: "hsl(var(--muted-foreground))", marginTop: "2px" }}>{m.sub}</div>
                     </div>
@@ -172,7 +173,7 @@ export default function Generate() {
                 <div>
                   <Label className="mb-2 block text-sm font-medium">School Type *</Label>
                   <div className="flex gap-2">
-                    {[{ val: "primary", label: "Primary" }, { val: "secondary", label: "Secondary" }, { val: "tertiary", label: "Tertiary" }].map(t => (
+                    {[{ val: "primary", label: "Primary" }, { val: "secondary", label: "Secondary" }, { val: "tertiary", label: "Tertiary" }].map((t) => (
                       <button key={t.val} type="button" data-testid={`type-${t.val}`}
                         onClick={() => setValue("schoolType", t.val as "primary" | "secondary" | "tertiary")}
                         style={{ flex: 1, padding: "0.5rem", borderRadius: 8, border: `2px solid ${watch("schoolType") === t.val ? "hsl(var(--primary))" : "hsl(var(--border))"}`, background: watch("schoolType") === t.val ? "hsl(var(--accent))" : "hsl(var(--card))", fontWeight: 600, fontSize: "0.85rem", cursor: "pointer", color: "hsl(var(--foreground))" }}>
@@ -214,7 +215,7 @@ export default function Generate() {
             </div>
           )}
 
-          {/* STEP 2: Leadership & Students */}
+          {/* STEP 2 */}
           {step === 2 && (
             <div className="step-card">
               <div className="flex items-center gap-3 mb-6">
@@ -226,33 +227,25 @@ export default function Generate() {
                   <p style={{ fontSize: "0.8rem", color: "hsl(var(--muted-foreground))" }}>Roles and contact details</p>
                 </div>
               </div>
-
               <div className="grid grid-cols-1 gap-4">
                 <div>
                   <Label className="mb-1 block text-sm font-medium">Principal / Head Teacher Name *</Label>
                   <Input {...form.register("principalName")} placeholder="e.g. Mr. Chukwuemeka Obi" data-testid="input-principalName" />
                   {form.formState.errors.principalName && <p className="text-xs mt-1" style={{ color: "hsl(var(--destructive))" }}>{form.formState.errors.principalName.message}</p>}
                 </div>
-
                 <div>
                   <Label className="mb-1 block text-sm font-medium">Data Protection Officer (DPO) — if appointed</Label>
                   <Input {...form.register("dpoName")} placeholder="Full name (leave blank if not yet designated)" data-testid="input-dpoName" />
                 </div>
-
                 <div>
                   <Label className="mb-1 block text-sm font-medium">Contact Email *</Label>
                   <Input {...form.register("contactEmail")} type="email" placeholder="admin@yourschool.edu.ng" data-testid="input-contactEmail" />
                   {form.formState.errors.contactEmail && <p className="text-xs mt-1" style={{ color: "hsl(var(--destructive))" }}>{form.formState.errors.contactEmail.message}</p>}
                 </div>
-
                 <div>
                   <Label className="mb-2 block text-sm font-medium">Student Age Group *</Label>
                   <div className="flex gap-2">
-                    {[
-                      { val: "under18", label: "Under 18", sub: "All minors" },
-                      { val: "mixed", label: "Mixed Ages", sub: "Some adults" },
-                      { val: "over18", label: "18 & Above", sub: "Adults only" },
-                    ].map(a => (
+                    {[{ val: "under18", label: "Under 18", sub: "All minors" }, { val: "mixed", label: "Mixed Ages", sub: "Some adults" }, { val: "over18", label: "18 & Above", sub: "Adults only" }].map((a) => (
                       <div key={a.val} data-testid={`age-${a.val}`}
                         onClick={() => setValue("studentAgeGroup", a.val as "under18" | "mixed" | "over18")}
                         className={`tool-card flex-1 text-center ${watch("studentAgeGroup") === a.val ? "selected" : ""}`} style={{ cursor: "pointer" }}>
@@ -266,7 +259,7 @@ export default function Generate() {
             </div>
           )}
 
-          {/* STEP 3: AI Tools */}
+          {/* STEP 3 */}
           {step === 3 && (
             <div className="step-card">
               <div className="flex items-center gap-3 mb-6">
@@ -278,9 +271,8 @@ export default function Generate() {
                   <p style={{ fontSize: "0.8rem", color: "hsl(var(--muted-foreground))" }}>Select all that apply — each gets dedicated policy clauses</p>
                 </div>
               </div>
-
               <div className="grid grid-cols-1 gap-3">
-                {aiToolOptions.map(tool => (
+                {aiToolOptions.map((tool) => (
                   <div key={tool.id} data-testid={`tool-${tool.id}`}
                     onClick={() => toggleArr("aiTools", tool.id)}
                     className={`tool-card flex items-center gap-4 ${aiTools.includes(tool.id) ? "selected" : ""}`}>
@@ -301,7 +293,7 @@ export default function Generate() {
             </div>
           )}
 
-          {/* STEP 4: Frameworks */}
+          {/* STEP 4 */}
           {step === 4 && (
             <div className="step-card">
               <div className="flex items-center gap-3 mb-6">
@@ -313,9 +305,8 @@ export default function Generate() {
                   <p style={{ fontSize: "0.8rem", color: "hsl(var(--muted-foreground))" }}>Select frameworks to include in the policy</p>
                 </div>
               </div>
-
               <div className="grid grid-cols-1 gap-3 mb-6">
-                {frameworkOptions.map(fw => (
+                {frameworkOptions.map((fw) => (
                   <div key={fw.id} data-testid={`fw-${fw.id}`}
                     onClick={() => toggleArr("frameworks", fw.id)}
                     className={`tool-card flex items-center gap-4 ${frameworks.includes(fw.id) ? "selected" : ""}`}>
@@ -336,9 +327,8 @@ export default function Generate() {
               </div>
               {form.formState.errors.frameworks && <p className="text-xs mt-2" style={{ color: "hsl(var(--destructive))" }}>Select at least one framework</p>}
 
-              {/* Summary */}
               <div style={{ background: "hsl(var(--muted))", borderRadius: 8, padding: "1rem", fontSize: "0.82rem" }}>
-                <div style={{ fontWeight: 700, marginBottom: "0.5rem", color: "hsl(var(--foreground))" }}>Policy Summary</div>
+                <div style={{ fontWeight: 700, marginBottom: "0.5rem", color: "hsl(var(--foreground))" }}>Summary</div>
                 <div style={{ color: "hsl(var(--muted-foreground))", lineHeight: 1.8 }}>
                   <div><strong>School:</strong> {watch("schoolName") || "—"} ({watch("schoolType")})</div>
                   <div><strong>Location:</strong> {watch("location")}, {watch("state")}, {watch("country")}</div>
@@ -350,10 +340,9 @@ export default function Generate() {
             </div>
           )}
 
-          {/* Nav buttons */}
           <div className="flex justify-between mt-6">
             {step > 1 ? (
-              <Button type="button" variant="outline" onClick={() => setStep(s => s - 1)} data-testid="button-prev">
+              <Button type="button" variant="outline" onClick={() => setStep((s) => s - 1)} data-testid="button-prev">
                 <ChevronLeft size={16} className="mr-1" /> Previous
               </Button>
             ) : <div />}
@@ -363,9 +352,8 @@ export default function Generate() {
                 Next <ChevronRight size={16} className="ml-1" />
               </Button>
             ) : (
-              <Button type="submit" disabled={mutation.isPending} data-testid="button-generate" style={{ background: "hsl(var(--primary))", color: "white", fontWeight: 600 }}>
-                {mutation.isPending ? "Generating..." : "Generate Policy"}
-                {!mutation.isPending && <Layers size={16} className="ml-2" />}
+              <Button type="submit" disabled={isGenerating} data-testid="button-generate" style={{ background: "hsl(var(--primary))", color: "white", fontWeight: 600 }}>
+                {isGenerating ? "Generating..." : <><Layers size={16} className="mr-2" /> Generate Policy</>}
               </Button>
             )}
           </div>
