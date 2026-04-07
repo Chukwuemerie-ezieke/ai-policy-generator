@@ -55,7 +55,7 @@ export default function Result() {
       doc.setTextColor(1, 105, 111);
       doc.setFontSize(7);
       doc.setFont("helvetica", "normal");
-      doc.text("Harmony Digital Consults Ltd · AI Governance Policy Generator for African Schools · harmonydigitalconsults.com", margin, doc.internal.pageSize.getHeight() - 5);
+      doc.text("Harmony Digital Consults Ltd · harmonydigitalconsults.com.ng", margin, doc.internal.pageSize.getHeight() - 5);
       doc.setTextColor(120, 120, 120);
       doc.text(`Page ${pageNum} of ${totalPages}`, pageW - margin, doc.internal.pageSize.getHeight() - 5, { align: "right" });
     };

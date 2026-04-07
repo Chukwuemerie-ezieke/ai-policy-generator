@@ -110,7 +110,7 @@ Approved By: ${data.principalName} (${data.schoolType === "primary" ? "Head Teac
 Contact: ${data.contactEmail}
 Location: ${data.location}, ${data.state}, ${data.country}
 ─────────────────────────────────────────────────────────────────────
-Prepared with Harmony Digital Consults AI Policy Generator
+Harmony Digital Consults Ltd
 www.harmonydigitalconsults.com.ng | info@harmonydigitalconsults.com.ng
 ─────────────────────────────────────────────────────────────────────
 
@@ -317,8 +317,7 @@ ${data.schoolType === "primary" ? "Head Teacher" : data.schoolType === "secondar
 ${data.schoolName}
 
 ─────────────────────────────────────────────────────────────────────
-Document prepared by Harmony Digital Consults Ltd
-AI Governance Policy Generator for African Schools
+Prepared by Harmony Digital Consults Ltd
 Version 1.0 | ${today()}
 Frameworks: NDPA/NDPR (Nigeria) | ISO/IEC 42001:2023 | ISO/IEC 27001 | AU Continental AI Strategy 2024
 ─────────────────────────────────────────────────────────────────────

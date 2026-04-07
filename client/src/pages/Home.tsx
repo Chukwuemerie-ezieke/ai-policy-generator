@@ -19,7 +19,7 @@ export default function Home() {
                 Harmony Digital Consults
               </div>
               <div style={{ fontSize: "0.7rem", color: "hsl(var(--muted-foreground))", marginTop: "-2px" }}>
-                AI Policy Generator
+                Policy Generator
               </div>
             </div>
           </div>

@@ -10,7 +10,7 @@
 
 **Generate comprehensive, regulation-aligned AI Governance Policy documents for African schools in minutes.**
 
-[Live Demo](https://www.perplexity.ai/computer/a/ai-governance-policy-generator-vT3KsItkR82vOKSeN72jcQ) · [Report a Bug](https://github.com/Chukwuemerie-ezieke/ai-policy-generator/issues) · [Request a Feature](https://github.com/Chukwuemerie-ezieke/ai-policy-generator/issues)
+[Report a Bug](https://github.com/Chukwuemerie-ezieke/ai-policy-generator/issues) · [Request a Feature](https://github.com/Chukwuemerie-ezieke/ai-policy-generator/issues)
 
 </div>
 
@@ -282,7 +282,7 @@ Full Policy Document (12–18 pages equivalent)
 
 ### Key Design Decisions
 
-- **Deterministic, not AI-generated** — The policy text is composed from expert-authored clause templates, ensuring legal accuracy and regulatory fidelity. No LLM is involved in generation.
+- **Expert-authored templates** — The policy text is composed from carefully written clause templates, ensuring legal accuracy and regulatory fidelity. Output is consistent and reproducible.
 - **Adaptive clauses** — Every conditional (`isUnder18`, `boardingSchool`, `hasIctLab`, `dpoName`) modifies the output, making each policy genuinely specific to the institution.
 - **Nigeria-first** — Penalties, timelines, and authorities reference NDPC (Nigeria Data Protection Commission) and the NDPA 2023 specifically.
 - **Extensible** — Adding a new AI tool or framework is as simple as adding a new case to the switch statement and a new entry in the `frameworkClauses` map.
