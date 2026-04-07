@@ -111,7 +111,7 @@ Contact: ${data.contactEmail}
 Location: ${data.location}, ${data.state}, ${data.country}
 ─────────────────────────────────────────────────────────────────────
 Prepared with Harmony Digital Consults AI Policy Generator
-www.harmonydigitalconsults.com | support@harmonydigitalconsults.com
+www.harmonydigitalconsults.com.ng | info@harmonydigitalconsults.com.ng
 ─────────────────────────────────────────────────────────────────────
 
 

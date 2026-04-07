@@ -43,7 +43,7 @@
 
 The **AI Governance Policy Generator for African Schools** is a full-stack web application that enables Nigerian and African educational institutions to generate comprehensive, legally-aligned Artificial Intelligence governance policy documents in minutes — without needing legal expertise or compliance consultants.
 
-The tool was built as part of the **AI Safety in EdTech** project initiative by [Harmony Digital Consults Ltd](https://harmonydigitalconsults.com), addressing a critical gap in AI governance infrastructure for African schools.
+The tool was built as part of the **AI Safety in EdTech** project initiative by [Harmony Digital Consults Ltd](https://harmonydigitalconsults.com.ng), addressing a critical gap in AI governance infrastructure for African schools.
 
 > **Context:** Most AI safety tooling and governance frameworks are designed for Western regulatory contexts (GDPR, FERPA). This tool adapts global best practices — ISO 42001, ISO 27001, and the AU Continental AI Strategy — into the Nigerian regulatory environment (NDPA 2023 / NDPR).
 
@@ -405,12 +405,13 @@ This project is licensed under the **MIT License** — see [LICENSE](./LICENSE) 
 **Harmony Digital Consults Ltd** is an EdTech company based in Anambra State, Nigeria, building digital tools for African schools and educational institutions.
 
 **Products:**
-- [Harmony School Suite](https://harmonydigitalconsults.com) — Unified SaaS for school management (EduTrack, TimeGrid, VoicelessBox, Parents Connect)
-- [PlagWatch](https://github.com/Chukwuemerie-ezieke/plagwatch) — AI-powered originality checker browser extension
-- [SmartCite](https://github.com/Chukwuemerie-ezieke/smartcite-extension) — Academic citation generator
+- [Harmony School Suite](https://github.com/Chukwuemerie-ezieke/harmony-school-suite) — Unified SaaS for school management (EduTrack, TimeGrid, VoicelessBox, Parents Connect)
+- [SmartCite](https://github.com/Chukwuemerie-ezieke/smartcite-extension) — Academic citation generator browser extension
+- [EduTrack Nigeria](https://github.com/Chukwuemerie-ezieke/edutrack-nigeria) — SaaS dashboard for school attendance and management
+- [VoicelessBox](https://github.com/Chukwuemerie-ezieke/voicelessbox) — Digital suggestion and complaint box for schools
 
-**Contact:** support@harmonydigitalconsults.com  
-**Website:** [harmonydigitalconsults.com](https://harmonydigitalconsults.com)  
+**Contact:** info@harmonydigitalconsults.com.ng  
+**Website:** [harmonydigitalconsults.com.ng](https://harmonydigitalconsults.com.ng)  
 **GitHub:** [@Chukwuemerie-ezieke](https://github.com/Chukwuemerie-ezieke)
 
 ---
