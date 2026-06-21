@@ -18,7 +18,10 @@ export default function Dashboard() {
                 <ArrowLeft size={16} /> Back
               </button>
             </Link>
-            <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "0.95rem" }}>Session History</div>
+            <div className="flex items-center gap-2">
+              <img src="/logo.png" alt="Harmony Digital Consults Logo" width="24" height="24" style={{ borderRadius: "4px", objectFit: "contain" }} />
+              <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "0.95rem" }}>Session History</div>
+            </div>
           </div>
           <Link href="/generate">
             <Button size="sm" style={{ background: "hsl(var(--primary))", color: "white" }} data-testid="button-new-policy">
