@@ -13,10 +13,12 @@ export const policies = sqliteTable("policies", {
   dpoName: text("dpo_name"),
   contactEmail: text("contact_email").notNull(),
   schoolLogoUrl: text("school_logo_url"),
-  aiTools: text("ai_tools").notNull(), // JSON array
-  frameworks: text("frameworks").notNull(), // JSON array
+  aiTools: text("ai_tools", { mode: "json" }).$type<string[]>().notNull(), // JSON array
+  frameworks: text("frameworks", { mode: "json" }).$type<string[]>().notNull(), // JSON array
   studentAgeGroup: text("student_age_group").notNull(), // under18 | mixed | over18
-  boardingSchool: integer("boarding_school", { mode: "boolean" }).default(false),
+  boardingSchool: integer("boarding_school", { mode: "boolean" }).default(
+    false,
+  ),
   hasIctLab: integer("has_ict_lab", { mode: "boolean" }).default(false),
   mode: text("mode").notNull().default("school"), // school | consultant
   consultantOrg: text("consultant_org"),

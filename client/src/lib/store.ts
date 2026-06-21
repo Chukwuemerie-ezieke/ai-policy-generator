@@ -1,9 +1,9 @@
 import { createContext, useContext } from "react";
-import type { GeneratedPolicy } from "./policyEngine";
+import type { Policy } from "@shared/schema";
 
 export interface AppStore {
-  policies: GeneratedPolicy[];
-  addPolicy: (p: GeneratedPolicy) => void;
+  policies: Policy[];
+  addPolicy: (p: Policy) => void;
 }
 
 export const StoreContext = createContext<AppStore>({

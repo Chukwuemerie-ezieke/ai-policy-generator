@@ -12,7 +12,7 @@ export default function Result() {
   const [copied, setCopied] = useState(false);
   const { policies } = useStore();
 
-  const policy = policies.find((p) => p.id === params?.id);
+  const policy = policies.find((p) => p.id.toString() === params?.id);
 
   const copyToClipboard = () => {
     if (!policy?.generatedPolicy) return;
@@ -25,7 +25,11 @@ export default function Result() {
 
   const downloadPDF = () => {
     if (!policy?.generatedPolicy) return;
-    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
     const pageW = doc.internal.pageSize.getWidth();
     const margin = 18;
     const usableW = pageW - margin * 2;
@@ -42,7 +46,9 @@ export default function Result() {
     doc.setFontSize(8);
     doc.text(
       `Generated: ${new Date(policy.createdAt).toLocaleDateString("en-NG", { year: "numeric", month: "long", day: "numeric" })}`,
-      pageW - margin, 20, { align: "right" }
+      pageW - margin,
+      20,
+      { align: "right" },
     );
 
     const addFooter = (pageNum: number, totalPages: number) => {
@@ -51,9 +57,18 @@ export default function Result() {
       doc.setTextColor(1, 105, 111);
       doc.setFontSize(7);
       doc.setFont("helvetica", "normal");
-      doc.text("Harmony Digital Consults Ltd · harmonydigitalconsults.com.ng", margin, doc.internal.pageSize.getHeight() - 5);
+      doc.text(
+        "Harmony Digital Consults Ltd · harmonydigitalconsults.com.ng",
+        margin,
+        doc.internal.pageSize.getHeight() - 5,
+      );
       doc.setTextColor(120, 120, 120);
-      doc.text(`Page ${pageNum} of ${totalPages}`, pageW - margin, doc.internal.pageSize.getHeight() - 5, { align: "right" });
+      doc.text(
+        `Page ${pageNum} of ${totalPages}`,
+        pageW - margin,
+        doc.internal.pageSize.getHeight() - 5,
+        { align: "right" },
+      );
     };
 
     let y = 38;
@@ -66,22 +81,37 @@ export default function Result() {
 
     for (const line of (policy.generatedPolicy || "").split("\n")) {
       const isSeparator = line.startsWith("─");
-      const isSectionHeader = /^\d+\./.test(line.trim()) && line.trim().length < 60;
-      const isSubHeader = line.trim().startsWith("**") && line.trim().endsWith("**");
+      const isSectionHeader =
+        /^\d+\./.test(line.trim()) && line.trim().length < 60;
+      const isSubHeader =
+        line.trim().startsWith("**") && line.trim().endsWith("**");
       const trimmed = line.replace(/\*\*/g, "").trim();
 
       if (isSeparator) {
-        if (y > bodyBottom - 8) { addFooter(currentPage, 0); doc.addPage(); currentPage++; y = 38; }
+        if (y > bodyBottom - 8) {
+          addFooter(currentPage, 0);
+          doc.addPage();
+          currentPage++;
+          y = 38;
+        }
         doc.setDrawColor(1, 105, 111);
         doc.setLineWidth(0.3);
         doc.line(margin, y, pageW - margin, y);
         y += 4;
         continue;
       }
-      if (!trimmed) { y += 2; continue; }
+      if (!trimmed) {
+        y += 2;
+        continue;
+      }
 
       if (isSectionHeader) {
-        if (y > bodyBottom - 12) { addFooter(currentPage, 0); doc.addPage(); currentPage++; y = 38; }
+        if (y > bodyBottom - 12) {
+          addFooter(currentPage, 0);
+          doc.addPage();
+          currentPage++;
+          y = 38;
+        }
         doc.setFillColor(1, 105, 111);
         doc.rect(margin, y - 3, usableW, 8, "F");
         doc.setTextColor(255, 255, 255);
@@ -94,12 +124,22 @@ export default function Result() {
       }
 
       if (isSubHeader) {
-        if (y > bodyBottom - 8) { addFooter(currentPage, 0); doc.addPage(); currentPage++; y = 38; }
+        if (y > bodyBottom - 8) {
+          addFooter(currentPage, 0);
+          doc.addPage();
+          currentPage++;
+          y = 38;
+        }
         doc.setFontSize(8.5);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(1, 80, 86);
         for (const wl of doc.splitTextToSize(trimmed, usableW)) {
-          if (y > bodyBottom) { addFooter(currentPage, 0); doc.addPage(); currentPage++; y = 38; }
+          if (y > bodyBottom) {
+            addFooter(currentPage, 0);
+            doc.addPage();
+            currentPage++;
+            y = 38;
+          }
           doc.text(wl, margin, y);
           y += lineHeight;
         }
@@ -117,7 +157,12 @@ export default function Result() {
       doc.setFont("helvetica", "normal");
       const wrapped = doc.splitTextToSize(textToWrite, wrapWidth);
       for (let wi = 0; wi < wrapped.length; wi++) {
-        if (y > bodyBottom) { addFooter(currentPage, 0); doc.addPage(); currentPage++; y = 38; }
+        if (y > bodyBottom) {
+          addFooter(currentPage, 0);
+          doc.addPage();
+          currentPage++;
+          y = 38;
+        }
         if (isBullet && wi === 0) {
           doc.setTextColor(1, 105, 111);
           doc.text("•", margin + 1, y);
@@ -135,40 +180,100 @@ export default function Result() {
       addFooter(p, totalPages);
     }
 
-    doc.save(`${policy.schoolName.replace(/\s+/g, "_")}_AI_Governance_Policy.pdf`);
-    toast({ title: "PDF downloaded", description: "Your policy document has been saved." });
+    doc.save(
+      `${policy.schoolName.replace(/\s+/g, "_")}_AI_Governance_Policy.pdf`,
+    );
+    toast({
+      title: "PDF downloaded",
+      description: "Your policy document has been saved.",
+    });
   };
 
   if (!policy) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: "hsl(var(--background))" }}>
-        <p style={{ color: "hsl(var(--muted-foreground))" }}>Policy not found — it may have been lost on page refresh.</p>
+      <div
+        className="min-h-screen flex flex-col items-center justify-center gap-4"
+        style={{ background: "hsl(var(--background))" }}
+      >
+        <p style={{ color: "hsl(var(--muted-foreground))" }}>
+          Policy not found — it may have been lost on page refresh.
+        </p>
         <Link href="/generate">
-          <Button style={{ background: "hsl(var(--primary))", color: "white" }}>Generate a New Policy</Button>
+          <Button style={{ background: "hsl(var(--primary))", color: "white" }}>
+            Generate a New Policy
+          </Button>
         </Link>
       </div>
     );
   }
 
-  const fwLabels: Record<string, string> = { ndpr: "NDPA/NDPR", iso42001: "ISO 42001", iso27001: "ISO 27001", au: "AU AI Strategy" };
-  const toolLabels: Record<string, string> = { chatbots: "AI Chatbots", edtech: "EdTech Platforms", schoolmgmt: "School Management AI", contentgen: "AI Content Generation" };
+  const fwLabels: Record<string, string> = {
+    ndpr: "NDPA/NDPR",
+    iso42001: "ISO 42001",
+    iso27001: "ISO 27001",
+    au: "AU AI Strategy",
+  };
+  const toolLabels: Record<string, string> = {
+    chatbots: "AI Chatbots",
+    edtech: "EdTech Platforms",
+    schoolmgmt: "School Management AI",
+    contentgen: "AI Content Generation",
+  };
 
   return (
-    <div className="min-h-screen" style={{ background: "hsl(var(--background))" }}>
-      <header style={{ background: "hsl(var(--card))", borderBottom: "1px solid hsl(var(--border))" }}>
+    <div
+      className="min-h-screen"
+      style={{ background: "hsl(var(--background))" }}
+    >
+      <header
+        style={{
+          background: "hsl(var(--card))",
+          borderBottom: "1px solid hsl(var(--border))",
+        }}
+      >
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/">
-            <button style={{ color: "hsl(var(--muted-foreground))", display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.875rem" }}>
+            <button
+              style={{
+                color: "hsl(var(--muted-foreground))",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                fontSize: "0.875rem",
+              }}
+            >
               <ArrowLeft size={16} /> Home
             </button>
           </Link>
-          <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "0.95rem" }}>Policy Generated</div>
+          <div
+            style={{
+              fontFamily: "var(--font-display)",
+              fontWeight: 800,
+              fontSize: "0.95rem",
+            }}
+          >
+            Policy Generated
+          </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={copyToClipboard} data-testid="button-copy">
-              {copied ? <CheckCircle size={14} className="mr-1" /> : <Copy size={14} className="mr-1" />}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={copyToClipboard}
+              data-testid="button-copy"
+            >
+              {copied ? (
+                <CheckCircle size={14} className="mr-1" />
+              ) : (
+                <Copy size={14} className="mr-1" />
+              )}
               {copied ? "Copied!" : "Copy"}
             </Button>
-            <Button size="sm" onClick={downloadPDF} data-testid="button-download" style={{ background: "hsl(var(--primary))", color: "white" }}>
+            <Button
+              size="sm"
+              onClick={downloadPDF}
+              data-testid="button-download"
+              style={{ background: "hsl(var(--primary))", color: "white" }}
+            >
               <Download size={14} className="mr-1" /> Download PDF
             </Button>
           </div>
@@ -179,40 +284,105 @@ export default function Result() {
         <div className="step-card mb-6">
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div>
-              <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "1.3rem", marginBottom: "0.25rem" }}>{policy.schoolName}</h1>
-              <p style={{ fontSize: "0.82rem", color: "hsl(var(--muted-foreground))" }}>
-                {policy.schoolType.charAt(0).toUpperCase() + policy.schoolType.slice(1)} School · {policy.location}, {policy.state}, {policy.country}
+              <h1
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 800,
+                  fontSize: "1.3rem",
+                  marginBottom: "0.25rem",
+                }}
+              >
+                {policy.schoolName}
+              </h1>
+              <p
+                style={{
+                  fontSize: "0.82rem",
+                  color: "hsl(var(--muted-foreground))",
+                }}
+              >
+                {policy.schoolType.charAt(0).toUpperCase() +
+                  policy.schoolType.slice(1)}{" "}
+                School · {policy.location}, {policy.state}, {policy.country}
               </p>
             </div>
             <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: "0.75rem", color: "hsl(var(--muted-foreground))" }}>Generated</div>
-              <div style={{ fontSize: "0.85rem", fontWeight: 600 }}>{new Date(policy.createdAt).toLocaleDateString("en-NG", { day: "numeric", month: "short", year: "numeric" })}</div>
+              <div
+                style={{
+                  fontSize: "0.75rem",
+                  color: "hsl(var(--muted-foreground))",
+                }}
+              >
+                Generated
+              </div>
+              <div style={{ fontSize: "0.85rem", fontWeight: 600 }}>
+                {new Date(policy.createdAt).toLocaleDateString("en-NG", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })}
+              </div>
             </div>
           </div>
           <div className="flex flex-wrap gap-2 mt-4">
-            {policy.frameworks.map((f) => <span key={f} className="badge-framework">{fwLabels[f] || f}</span>)}
+            {policy.frameworks.map((f) => (
+              <span key={f} className="badge-framework">
+                {fwLabels[f] || f}
+              </span>
+            ))}
           </div>
-          <div style={{ marginTop: "0.75rem", fontSize: "0.8rem", color: "hsl(var(--muted-foreground))" }}>
+          <div
+            style={{
+              marginTop: "0.75rem",
+              fontSize: "0.8rem",
+              color: "hsl(var(--muted-foreground))",
+            }}
+          >
             Covers: {policy.aiTools.map((t) => toolLabels[t] || t).join(" · ")}
           </div>
         </div>
 
         <div className="step-card mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1rem" }}>Policy Document</h2>
-            <span style={{ fontSize: "0.75rem", color: "hsl(var(--muted-foreground))" }}>
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontWeight: 700,
+                fontSize: "1rem",
+              }}
+            >
+              Policy Document
+            </h2>
+            <span
+              style={{
+                fontSize: "0.75rem",
+                color: "hsl(var(--muted-foreground))",
+              }}
+            >
               {policy.generatedPolicy?.length.toLocaleString()} characters
             </span>
           </div>
-          <div className="policy-output" data-testid="policy-output">{policy.generatedPolicy}</div>
+          <div className="policy-output" data-testid="policy-output">
+            {policy.generatedPolicy}
+          </div>
         </div>
 
         <div className="flex gap-3 flex-wrap">
-          <Button onClick={downloadPDF} style={{ background: "hsl(var(--primary))", color: "white", fontWeight: 600 }}>
+          <Button
+            onClick={downloadPDF}
+            style={{
+              background: "hsl(var(--primary))",
+              color: "white",
+              fontWeight: 600,
+            }}
+          >
             <Download size={16} className="mr-2" /> Download PDF
           </Button>
-          <Link href="/generate"><Button variant="outline">Generate Another</Button></Link>
-          <Link href="/dashboard"><Button variant="outline">Session History</Button></Link>
+          <Link href="/generate">
+            <Button variant="outline">Generate Another</Button>
+          </Link>
+          <Link href="/dashboard">
+            <Button variant="outline">Session History</Button>
+          </Link>
         </div>
       </div>
     </div>

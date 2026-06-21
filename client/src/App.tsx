@@ -3,7 +3,7 @@ import { useHashLocation } from "wouter/use-hash-location";
 import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { StoreContext } from "@/lib/store";
-import type { GeneratedPolicy } from "@/lib/policyEngine";
+import type { Policy } from "@shared/schema";
 import Home from "@/pages/Home";
 import Generate from "@/pages/Generate";
 import Result from "@/pages/Result";
@@ -11,9 +11,9 @@ import Dashboard from "@/pages/Dashboard";
 import NotFound from "@/pages/not-found";
 
 export default function App() {
-  const [policies, setPolicies] = useState<GeneratedPolicy[]>([]);
+  const [policies, setPolicies] = useState<Policy[]>([]);
 
-  const addPolicy = (p: GeneratedPolicy) => {
+  const addPolicy = (p: Policy) => {
     setPolicies((prev) => [p, ...prev]);
   };
 
