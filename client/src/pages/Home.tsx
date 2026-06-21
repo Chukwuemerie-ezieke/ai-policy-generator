@@ -10,7 +10,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {/* Harmony HDC Logo */}
-            <img src="/logo.png" alt="Harmony Digital Consults Logo" width="36" height="36" style={{ borderRadius: "8px", objectFit: "contain" }} />
+            <img src="/ai-policy-generator/logo.png" alt="Harmony Digital Consults Logo" width="36" height="36" style={{ borderRadius: "8px", objectFit: "contain" }} />
             <div>
               <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "1rem", color: "hsl(var(--foreground))" }}>
                 Harmony Digital Consults
