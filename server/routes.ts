@@ -3,6 +3,7 @@ import type { Server } from "http";
 import { storage } from "./storage";
 import { insertPolicySchema } from "@shared/schema";
 import { generatePolicy } from "./policyEngine";
+import { requireApiKey } from "./middleware";
 
 export function registerRoutes(httpServer: Server, app: Express) {
   app.post("/api/policies/generate", (req, res) => {
@@ -24,7 +25,7 @@ export function registerRoutes(httpServer: Server, app: Express) {
     }
   });
 
-  app.get("/api/policies", (_req, res) => {
+  app.get("/api/policies", requireApiKey, (_req, res) => {
     try {
       const all = storage.getAllPolicies();
       return res.json(all);
@@ -33,8 +34,9 @@ export function registerRoutes(httpServer: Server, app: Express) {
     }
   });
 
-  app.get("/api/policies/:id", (req, res) => {
+  app.get("/api/policies/:id", requireApiKey, (req, res) => {
     try {
+      const id = parseInt(req.params.id as string);
       const id = parseInt(req.params.id, 10);
       if (isNaN(id) || id < 1) {
         return res.status(400).json({ error: "Invalid ID" });
