@@ -10,10 +10,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {/* Harmony HDC Logo */}
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-label="Harmony Digital Consults">
-              <rect width="36" height="36" rx="8" fill="hsl(var(--primary))" />
-              <path d="M8 10h4v16H8zM16 10h4v7h6V10h4v16h-4v-6h-6v6h-4z" fill="white" />
-            </svg>
+            <img src="/logo.png" alt="Harmony Digital Consults Logo" width="36" height="36" style={{ borderRadius: "8px", objectFit: "contain" }} />
             <div>
               <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "1rem", color: "hsl(var(--foreground))" }}>
                 Harmony Digital Consults
