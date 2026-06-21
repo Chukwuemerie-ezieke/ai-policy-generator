@@ -145,6 +145,9 @@ npm install
 ### Running Locally
 
 ```bash
+# Push the database schema
+npm run db:push
+
 # Start the development server (frontend + backend on the same port)
 npm run dev
 ```
@@ -347,17 +350,19 @@ Retrieve a single policy by ID, including full `generatedPolicy` text.
 
 ## Screenshots
 
+*(Screenshots coming soon)*
+
 | Home Page | Step 1 — School Profile |
 |-----------|------------------------|
-| Landing with framework badges and CTAs | Mode selection, school type, location inputs |
+| [Placeholder: Landing with framework badges and CTAs] | [Placeholder: Mode selection, school type, location inputs] |
 
 | Step 3 — AI Tools | Result — Policy Viewer |
 |-------------------|------------------------|
-| Multi-select tool cards with icons | Full policy text with Copy + PDF download |
+| [Placeholder: Multi-select tool cards with icons] | [Placeholder: Full policy text with Copy + PDF download] |
 
 | Consultant Dashboard | Generated PDF |
 |----------------------|---------------|
-| All policies with framework tags and dates | Branded teal header, school details, page numbers |
+| [Placeholder: All policies with framework tags and dates] | [Placeholder: Branded teal header, school details, page numbers] |
 
 ---
 
