@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useStore } from "@/lib/store";
 import { generatePolicy } from "@/lib/policyEngine";
 import type { GeneratedPolicy } from "@/lib/policyEngine";
+import { logoBase64 } from "@/lib/logoBase64";
 import { ChevronLeft, ChevronRight, Bot, BookOpen, Shield, Users, Building2, MessageSquare, Image, Layers } from "lucide-react";
 
 const TOTAL_STEPS = 4;
@@ -114,7 +115,8 @@ export default function Generate() {
               <ChevronLeft size={16} /> Back
             </button>
           </Link>
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <img src={logoBase64} alt="Harmony Digital Consults Logo" width="24" height="24" style={{ borderRadius: "4px", objectFit: "contain" }} />
             <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "0.95rem" }}>
               Policy Generator
             </div>
