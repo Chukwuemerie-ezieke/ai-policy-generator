@@ -173,7 +173,7 @@ export default function Result() {
             </button>
           </Link>
           <div className="flex items-center gap-2">
-            <img src="/ai-policy-generator/logo.png" alt="Harmony Digital Consults Logo" width="24" height="24" style={{ borderRadius: "4px", objectFit: "contain" }} />
+            <img src={logoBase64} alt="Harmony Digital Consults Logo" width="24" height="24" style={{ borderRadius: "4px", objectFit: "contain" }} />
             <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "0.95rem" }}>Policy Generated</div>
           </div>
           <div className="flex gap-2">

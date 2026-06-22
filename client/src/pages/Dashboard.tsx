@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { logoBase64 } from "@/lib/logoBase64";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, FileText, PlusCircle, Building2, Calendar } from "lucide-react";
 import { useStore } from "@/lib/store";
@@ -19,7 +20,7 @@ export default function Dashboard() {
               </button>
             </Link>
             <div className="flex items-center gap-2">
-              <img src="/ai-policy-generator/logo.png" alt="Harmony Digital Consults Logo" width="24" height="24" style={{ borderRadius: "4px", objectFit: "contain" }} />
+              <img src={logoBase64} alt="Harmony Digital Consults Logo" width="24" height="24" style={{ borderRadius: "4px", objectFit: "contain" }} />
               <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "0.95rem" }}>Session History</div>
             </div>
           </div>
