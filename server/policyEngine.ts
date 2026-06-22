@@ -1,18 +1,23 @@
 import type { InsertPolicy } from "@shared/schema";
 
 function today(): string {
-  return new Date().toLocaleDateString("en-NG", { year: "numeric", month: "long", day: "numeric" });
+  return new Date().toLocaleDateString("en-NG", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
 
 export function generatePolicy(data: InsertPolicy): string {
-  const aiTools: string[] = JSON.parse(data.aiTools as string);
-  const frameworks: string[] = JSON.parse(data.frameworks as string);
+  const aiTools: string[] = data.aiTools;
+  const frameworks: string[] = data.frameworks;
   const isUnder18 = data.studentAgeGroup !== "over18";
 
   const toolNames: Record<string, string> = {
     chatbots: "General AI Chatbots (ChatGPT, Gemini, Copilot, etc.)",
     edtech: "AI-Powered EdTech Platforms (LMS, Adaptive Tutoring, AI Grading)",
-    schoolmgmt: "School Management AI (Attendance, Timetabling, Feedback Systems)",
+    schoolmgmt:
+      "School Management AI (Attendance, Timetabling, Feedback Systems)",
     contentgen: "AI Content Generation (Text, Image, Audio, Video tools)",
   };
 
