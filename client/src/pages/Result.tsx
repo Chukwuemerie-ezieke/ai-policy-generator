@@ -5,6 +5,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { useStore } from "@/lib/store";
 import jsPDF from "jspdf";
+import { logoBase64 } from "@/lib/logoBase64";
+
 
 export default function Result() {
   const [, params] = useRoute("/result/:id");
@@ -36,13 +38,21 @@ export default function Result() {
 
     doc.setFillColor(1, 105, 111);
     doc.rect(0, 0, pageW, 28, "F");
+
+    // Add Company Logo
+    try {
+      doc.addImage(logoBase64, "PNG", margin, 4, 20, 20);
+    } catch (e) {
+      console.error("Error adding logo to PDF:", e);
+    }
+
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
-    doc.text(policy.schoolName, margin, 12);
+    doc.text(policy.schoolName, margin + 25, 12);
     doc.setFontSize(9);
     doc.setFont("helvetica", "normal");
-    doc.text("AI Governance Policy Document", margin, 20);
+    doc.text("AI Governance Policy Document", margin + 25, 20);
     doc.setFontSize(8);
     doc.text(
       `Generated: ${new Date(policy.createdAt).toLocaleDateString("en-NG", { year: "numeric", month: "long", day: "numeric" })}`,
@@ -253,6 +263,9 @@ export default function Result() {
             }}
           >
             Policy Generated
+          <div className="flex items-center gap-2">
+            <img src="/logo.png" alt="Harmony Digital Consults Logo" width="24" height="24" style={{ borderRadius: "4px", objectFit: "contain" }} />
+            <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "0.95rem" }}>Policy Generated</div>
           </div>
           <div className="flex gap-2">
             <Button
